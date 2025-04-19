@@ -6,7 +6,7 @@ export interface Program {
   descriptions: string
   total: number
   donateCount: number
-  target: number
+  target: number | null
   avatar: string
   code: string
   charity: Charity

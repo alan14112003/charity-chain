@@ -1,5 +1,11 @@
+import ListPrograms from './components/ListPrograms'
+
 const Home = () => {
-  return <></>
+  return (
+    <>
+      <ListPrograms />
+    </>
+  )
 }
 
 export default Home

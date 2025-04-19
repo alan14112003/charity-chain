@@ -5,5 +5,5 @@ export interface Charity {
   name: string
   detail: string
   avatar: string
-  programs: Program[]
+  programs?: Program[]
 }
