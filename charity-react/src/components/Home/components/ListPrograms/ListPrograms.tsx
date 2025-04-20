@@ -11,7 +11,7 @@ const ListPrograms = () => {
 
   const listPrograms: Program[] = listProgramsRes?.data || []
   return (
-    <div className="mt-8">
+    <div className="mt-4">
       {listPrograms.map((program) => (
         <ProgramItem key={program.id} program={program} />
       ))}

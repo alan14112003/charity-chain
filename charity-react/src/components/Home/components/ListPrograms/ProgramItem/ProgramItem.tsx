@@ -19,7 +19,7 @@ interface ProgramItemProps {
 const ProgramItem: FC<ProgramItemProps> = ({ program }) => {
   return (
     <Card className="w-full sm:w-1/2 lg:w-1/3 shadow-lg py-2 gap-2">
-      <Link to={'/programs/' + program.id}>
+      <Link to={'/programs/' + program.id} className="group">
         <CardContent>
           <img
             src={program.avatar}
@@ -29,7 +29,9 @@ const ProgramItem: FC<ProgramItemProps> = ({ program }) => {
         </CardContent>
         <CardHeader className="flex flex-row items-center gap-4">
           <div>
-            <CardTitle className="text-lg">{program.name}</CardTitle>
+            <CardTitle className="text-lg group-hover:text-blue-400">
+              {program.name}
+            </CardTitle>
           </div>
         </CardHeader>
 
@@ -49,6 +51,7 @@ const ProgramItem: FC<ProgramItemProps> = ({ program }) => {
           </div>
           <div>
             {/* thống kê số tiền nhận */}
+            <div className="text-sm">Tổng số tiền nhận được</div>
             <div className="flex items-center gap-1 ">
               <span>{program.total}đ</span>
               {program.target && (
