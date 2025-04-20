@@ -29,7 +29,7 @@ export class TransactionsService {
     return transformedData;
   }
 
-  async findOne(programCode: string) {
+  async findByProgramCode(programCode: string) {
     const data = await this.web3Service.filterTransfers(
       undefined,
       undefined,

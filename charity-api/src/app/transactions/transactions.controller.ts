@@ -17,7 +17,7 @@ export class TransactionsController {
   }
 
   @Get(':programCode')
-  findOne(@Param('programCode') programCode: string) {
-    return this.transactionsService.findOne(programCode);
+  findByProgramCode(@Param('programCode') programCode: string) {
+    return this.transactionsService.findByProgramCode(programCode);
   }
 }
