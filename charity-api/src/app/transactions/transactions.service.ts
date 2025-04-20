@@ -39,7 +39,7 @@ export class TransactionsService {
     );
 
     if (data.length === 0) {
-      return null;
+      return [];
     }
 
     const transformedData = data.map((item) =>
