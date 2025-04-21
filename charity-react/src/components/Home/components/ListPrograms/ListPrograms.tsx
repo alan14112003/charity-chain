@@ -1,7 +1,7 @@
 import { getAllPrograms, programKey } from '@/services/ProgramServices'
 import { Program } from '@/types/programs.type'
 import { useQuery } from '@tanstack/react-query'
-import ProgramItem from './ProgramItem'
+import ProgramItem from '../ProgramItem'
 
 const ListPrograms = () => {
   const { data: listProgramsRes } = useQuery({
