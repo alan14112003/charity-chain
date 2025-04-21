@@ -14,6 +14,9 @@ export class Charity {
   @Column()
   avatar: string;
 
+  @Column()
+  qr_code: string;
+
   @OneToMany(() => Program, (program) => program.charity)
   programs: Program[];
 }

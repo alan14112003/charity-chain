@@ -12,4 +12,8 @@ export class CreateCharityDto {
   @IsNotEmpty()
   @IsString()
   avatar: string;
+
+  @IsNotEmpty()
+  @IsString()
+  qr_code: string;
 }
