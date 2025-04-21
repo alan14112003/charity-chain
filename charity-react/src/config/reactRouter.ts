@@ -5,6 +5,7 @@ import Home from '../components/Home'
 import ClientLayout from '../layouts/Client'
 import ProgramDetail from '@/components/ProgramDetail'
 import Charity from '@/components/Charity'
+import CharityDetail from '@/components/CharityDetail'
 
 const router = createBrowserRouter([
   {
@@ -18,6 +19,10 @@ const router = createBrowserRouter([
       {
         path: '/charities',
         Component: Charity,
+      },
+      {
+        path: '/charities/:charityId',
+        Component: CharityDetail,
       },
       {
         path: 'login',
