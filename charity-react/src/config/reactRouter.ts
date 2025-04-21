@@ -6,6 +6,8 @@ import ClientLayout from '../layouts/Client'
 import ProgramDetail from '@/components/ProgramDetail'
 import Charity from '@/components/Charity'
 import CharityDetail from '@/components/CharityDetail'
+import ManagementLayout from '@/layouts/Management'
+import CharityManagement from '@/components/Management/components/Charity'
 
 const router = createBrowserRouter([
   {
@@ -31,6 +33,16 @@ const router = createBrowserRouter([
       {
         path: 'register',
         Component: Register,
+      },
+    ],
+  },
+  {
+    Component: ManagementLayout,
+    path: 'management',
+    children: [
+      {
+        path: 'charities',
+        Component: CharityManagement,
       },
     ],
   },
