@@ -4,6 +4,7 @@ import Register from '../components/Auth/Register'
 import Home from '../components/Home'
 import ClientLayout from '../layouts/Client'
 import ProgramDetail from '@/components/ProgramDetail'
+import Charity from '@/components/Charity'
 
 const router = createBrowserRouter([
   {
@@ -13,6 +14,10 @@ const router = createBrowserRouter([
       {
         path: '/programs/:programId',
         Component: ProgramDetail,
+      },
+      {
+        path: '/charities',
+        Component: Charity,
       },
       {
         path: 'login',
