@@ -15,6 +15,14 @@ const ManagementLayout = () => {
           >
             <span className="text-lg">Tổ chức từ thiện</span>
           </Link>
+          <Link
+            to={'/management/programs'}
+            className={cn(
+              'flex items-center gap-3 p-2 rounded-md hover:underline transition'
+            )}
+          >
+            <span className="text-lg">Chương trình từ thiện</span>
+          </Link>
         </nav>
       </aside>
       <div className="ml-64 p-4">
