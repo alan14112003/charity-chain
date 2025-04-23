@@ -34,7 +34,7 @@ const CharityManagement = () => {
       <Button
         className="mb-5 cursor-pointer"
         variant="outline"
-        onClick={() => handleNavigate('/management/charities/add')}
+        onClick={() => handleNavigate('/management/charities/create')}
       >
         Thêm tổ chức từ thiện
       </Button>

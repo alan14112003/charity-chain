@@ -8,6 +8,7 @@ import Charity from '@/components/Charity'
 import CharityDetail from '@/components/CharityDetail'
 import ManagementLayout from '@/layouts/Management'
 import CharityManagement from '@/components/Management/components/Charity'
+import CreateCharity from '@/components/Management/components/CreateCharity'
 
 const router = createBrowserRouter([
   {
@@ -42,7 +43,16 @@ const router = createBrowserRouter([
     children: [
       {
         path: 'charities',
-        Component: CharityManagement,
+        children: [
+          {
+            index: true,
+            Component: CharityManagement,
+          },
+          {
+            path: 'create',
+            Component: CreateCharity,
+          },
+        ],
       },
     ],
   },
