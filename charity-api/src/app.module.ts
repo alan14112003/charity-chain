@@ -10,6 +10,7 @@ import { PermissionsScannerModule } from './app/permissions_scanner/permissions_
 import { TransactionsModule } from './app/transactions/transactions.module';
 import { CharitiesModule } from './app/charities/charities.module';
 import { ProgramsModule } from './app/programs/programs.module';
+import { UploadsModule } from './app/uploads/uploads.module';
 
 @Module({
   imports: [
@@ -30,6 +31,7 @@ import { ProgramsModule } from './app/programs/programs.module';
     TransactionsModule,
     CharitiesModule,
     ProgramsModule,
+    UploadsModule,
   ],
 })
 export class AppModule {}
