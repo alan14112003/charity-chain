@@ -13,13 +13,26 @@ import {
 } from '@/components/ui/form'
 import { toast } from 'react-toastify'
 import { Input } from '@/components/ui/input'
+import TextEditor from '@/shared/components/TextEditor'
+import ImageUpload from '@/shared/components/ImageUpload'
+import { useQuery } from '@tanstack/react-query'
+import http from '@/config/http'
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/ui/select'
+import { uploadSingleFile } from '@/services/FileUploadServices'
+import { createCharity, CreateCharityDto } from '@/services/CharityServices'
+import { useState } from 'react'
+import { LoaderCircleIcon } from 'lucide-react'
 
 const CreateCharitySchema = z.object({
   name: z.string().min(1, { message: 'Tên tổ chức không được để trống.' }),
   detail: z.string().min(1, { message: 'Mô tả không được để trống.' }),
-  avatar: z.instanceof(FileList).refine((files) => files.length === 1, {
-    message: 'Vui lòng chọn 1 ảnh đại diện.',
-  }),
+  avatar: z.instanceof(File, { message: 'Vui lòng chọn 1 ảnh đại diện.' }),
   bank_name: z
     .string()
     .min(1, { message: 'Ngân hàng thụ hưởng không được để trống.' }),
@@ -32,6 +45,7 @@ const CreateCharitySchema = z.object({
 })
 
 function CreateCharity() {
+  const [isLoading, setIsLoading] = useState(false)
   const form = useForm<z.infer<typeof CreateCharitySchema>>({
     resolver: zodResolver(CreateCharitySchema),
     defaultValues: {
@@ -43,136 +57,177 @@ function CreateCharity() {
     },
   })
 
-  function onSubmit(data: z.infer<typeof CreateCharitySchema>) {
-    const avatarFile = data.avatar[0]
+  const { data: banksRes } = useQuery({
+    queryKey: ['banks'],
+    queryFn: async () => {
+      const res = await http.get('https://api.vietqr.io/v2/banks')
+      return res.data
+    },
+  })
 
-    console.log(data)
+  const banks = banksRes?.data || []
 
-    // toast({
-    //   title: 'Dữ liệu đã nhập:',
-    //   description: (
-    //     <pre className="mt-2 w-[340px] rounded-md bg-slate-950 p-4 text-white overflow-x-auto">
-    //       <code>
-    //         {JSON.stringify({ ...data, avatar: avatarFile.name }, null, 2)}
-    //       </code>
-    //     </pre>
-    //   ),
-    // })
+  const onSubmit = async (data: z.infer<typeof CreateCharitySchema>) => {
+    setIsLoading(true)
 
-    // TODO: Gửi formData lên server nếu muốn upload file thật
-    // const formData = new FormData()
-    // formData.append("name", data.name)
-    // formData.append("detail", data.detail)
-    // formData.append("avatar", avatarFile)
-    // formData.append("bank_name", data.bank_name)
-    // ...
+    try {
+      const avatarRes = await uploadSingleFile(data.avatar)
+      if (avatarRes.status !== 200) {
+        toast.error('Tải ảnh lên thất bại. Vui lòng thử lại sau.')
+        return
+      }
+
+      const createCharityData: CreateCharityDto = {
+        name: data.name,
+        detail: data.detail,
+        avatar: avatarRes.data.url,
+        qr_code: JSON.stringify({
+          bank_name: data.bank_name,
+          bank_account_number: data.bank_account_number,
+          bank_account_name: data.bank_account_name,
+        }),
+      }
+
+      const createCharityRes = await createCharity(createCharityData)
+      if (createCharityRes.status === 201) {
+        toast.success('Tạo tổ chức thành công.')
+        form.reset()
+        return
+      }
+      toast.error('Tạo tổ chức thất bại. Vui lòng thử lại sau.')
+    } catch (error) {
+      toast.error('Tạo tổ chức thất bại. Vui lòng thử lại sau.')
+    } finally {
+      setIsLoading(false)
+    }
   }
 
   return (
-    <Form {...form}>
-      <form
-        onSubmit={form.handleSubmit(onSubmit)}
-        className="space-y-6 w-full max-w-xl"
-      >
-        {/* Tên tổ chức */}
-        <FormField
-          control={form.control}
-          name="name"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Tên tổ chức</FormLabel>
-              <FormControl>
-                <Input placeholder="Ví dụ: Quỹ Trái Đất Xanh" {...field} />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
+    <div className="flex items-center flex-col">
+      <h2 className="text-3xl font-bold mb-5">Tạo tổ chức từ thiện mới</h2>
+      <Form {...form}>
+        <form
+          onSubmit={form.handleSubmit(onSubmit)}
+          className="space-y-6 w-full max-w-xl"
+        >
+          {/* Tên tổ chức */}
+          <FormField
+            control={form.control}
+            name="name"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Tên tổ chức</FormLabel>
+                <FormControl>
+                  <Input placeholder="Ví dụ: Quỹ Trái Đất Xanh" {...field} />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
 
-        {/* Mô tả */}
-        <FormField
-          control={form.control}
-          name="detail"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Mô tả</FormLabel>
-              <FormControl>
-                <Input
-                  placeholder="Thông tin mô tả tổ chức từ thiện..."
-                  {...field}
-                />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
+          {/* Mô tả */}
+          <FormField
+            control={form.control}
+            name="detail"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Mô tả</FormLabel>
+                <FormControl>
+                  <TextEditor
+                    placeholder="Thông tin mô tả tổ chức từ thiện..."
+                    {...field}
+                  />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
 
-        {/* Upload avatar */}
-        <FormField
-          control={form.control}
-          name="avatar"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Ảnh đại diện</FormLabel>
-              <FormControl>
-                <Input
-                  type="file"
-                  accept="image/*"
-                  onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
-                    field.onChange(e.target.files)
-                  }}
-                />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
+          {/* Upload avatar */}
+          <FormField
+            control={form.control}
+            name="avatar"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Ảnh đại diện</FormLabel>
+                <FormControl>
+                  <ImageUpload onChange={field.onChange} />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
 
-        {/* QR Code - Thông tin tài khoản */}
-        <FormField
-          control={form.control}
-          name="bank_name"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Ngân hàng thụ hưởng</FormLabel>
-              <FormControl>
-                <Input placeholder="VD: Vietcombank" {...field} />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-        <FormField
-          control={form.control}
-          name="bank_account_number"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Số tài khoản</FormLabel>
-              <FormControl>
-                <Input placeholder="VD: 0123456789" {...field} />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-        <FormField
-          control={form.control}
-          name="bank_account_name"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Tên chủ tài khoản</FormLabel>
-              <FormControl>
-                <Input placeholder="VD: Nguyễn Văn A" {...field} />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
+          <FormField
+            control={form.control}
+            name="bank_name"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Ngân hàng thụ hưởng</FormLabel>
+                <Select
+                  onValueChange={field.onChange}
+                  defaultValue={field.value}
+                >
+                  <FormControl>
+                    <SelectTrigger className="w-full">
+                      <SelectValue placeholder="Chọn ngân hàng thụ hưởng" />
+                    </SelectTrigger>
+                  </FormControl>
+                  <SelectContent>
+                    {banks.map((bank: any) => {
+                      return (
+                        <SelectItem key={bank.id} value={bank.bin}>
+                          {bank.shortName}
+                        </SelectItem>
+                      )
+                    })}
+                  </SelectContent>
+                </Select>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+          <FormField
+            control={form.control}
+            name="bank_account_number"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Số tài khoản</FormLabel>
+                <FormControl>
+                  <Input placeholder="VD: 0123456789" {...field} />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+          <FormField
+            control={form.control}
+            name="bank_account_name"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Tên chủ tài khoản</FormLabel>
+                <FormControl>
+                  <Input
+                    placeholder="Viết hoa không dấu VD: NGUYEN VAN A"
+                    {...field}
+                  />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
 
-        {/* Nút submit */}
-        <Button type="submit">Tạo tổ chức</Button>
-      </form>
-    </Form>
+          {/* Nút submit */}
+          <Button disabled={isLoading} className="cursor-pointer" type="submit">
+            {isLoading ? (
+              <LoaderCircleIcon className="animate-spin" />
+            ) : (
+              'Tạo tổ chức'
+            )}
+          </Button>
+        </form>
+      </Form>
+    </div>
   )
 }
 
