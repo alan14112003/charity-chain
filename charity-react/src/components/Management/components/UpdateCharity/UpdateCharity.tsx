@@ -25,11 +25,20 @@ import {
   SelectValue,
 } from '@/components/ui/select'
 import { uploadSingleFile } from '@/services/FileUploadServices'
-import { createCharity, FormCharityDto } from '@/services/CharityServices'
-import { useState } from 'react'
+import {
+  charityKey,
+  FormCharityDto,
+  getCharityDetail,
+  updateCharity,
+} from '@/services/CharityServices'
+import { useEffect, useState } from 'react'
 import { LoaderCircleIcon } from 'lucide-react'
+import { useParams } from 'react-router'
+import { BankInfo, Charity } from '@/types/charity.type'
+import { isSameFile, urlToFileAuto } from '../../utils/helper'
+import queryClient from '@/config/reactQuery'
 
-const CreateCharitySchema = z.object({
+const UpdateCharitySchema = z.object({
   name: z.string().min(1, { message: 'Tên tổ chức không được để trống.' }),
   detail: z.string().min(1, { message: 'Mô tả không được để trống.' }),
   avatar: z.instanceof(File, { message: 'Vui lòng chọn 1 ảnh đại diện.' }),
@@ -44,10 +53,15 @@ const CreateCharitySchema = z.object({
     .min(1, { message: 'Chủ tài khoản không được để trống.' }),
 })
 
-function CreateCharity() {
+const UpdateCharity = () => {
+  const { charityId = '' } = useParams()
   const [isLoading, setIsLoading] = useState(false)
-  const form = useForm<z.infer<typeof CreateCharitySchema>>({
-    resolver: zodResolver(CreateCharitySchema),
+  const [originalAvatarFile, setOriginalAvatarFile] = useState<File | null>(
+    null
+  )
+
+  const form = useForm<z.infer<typeof UpdateCharitySchema>>({
+    resolver: zodResolver(UpdateCharitySchema),
     defaultValues: {
       name: '',
       detail: '',
@@ -57,6 +71,15 @@ function CreateCharity() {
     },
   })
 
+  const { data: charityRes } = useQuery({
+    queryKey: [charityKey, 'detail', charityId],
+    queryFn: () => {
+      return getCharityDetail(+charityId)
+    },
+  })
+
+  const charity: Charity = charityRes?.data || null
+
   const { data: banksRes } = useQuery({
     queryKey: ['banks'],
     queryFn: async () => {
@@ -65,22 +88,45 @@ function CreateCharity() {
     },
   })
 
+  useEffect(() => {
+    if (charity) {
+      const bank: BankInfo = JSON.parse(charity.qr_code)
+
+      form.setValue('name', charity.name)
+      form.setValue('detail', charity.detail)
+      form.setValue('bank_name', bank.bank_name)
+      form.setValue('bank_account_number', bank.bank_account_number)
+      form.setValue('bank_account_name', bank.bank_account_name)
+      urlToFileAuto(charity.avatar).then((file) => {
+        form.setValue('avatar', file)
+        setOriginalAvatarFile(file)
+      })
+    }
+  }, [charity])
+
   const banks = banksRes?.data || []
 
-  const onSubmit = async (data: z.infer<typeof CreateCharitySchema>) => {
+  const onSubmit = async (data: z.infer<typeof UpdateCharitySchema>) => {
     setIsLoading(true)
 
     try {
-      const avatarRes = await uploadSingleFile(data.avatar)
-      if (avatarRes.status !== 200) {
-        toast.error('Tải ảnh lên thất bại. Vui lòng thử lại sau.')
-        return
+      let avatarUrl = charity?.avatar || ''
+      const avatarChanged = !isSameFile(originalAvatarFile, data.avatar)
+      if (avatarChanged) {
+        const avatarRes = await uploadSingleFile(data.avatar)
+
+        if (avatarRes.status !== 200) {
+          toast.error('Tải ảnh lên thất bại. Vui lòng thử lại sau.')
+          return
+        }
+
+        avatarUrl = avatarRes.data.url
       }
 
-      const createCharityData: FormCharityDto = {
+      const updateCharityData: FormCharityDto = {
         name: data.name,
         detail: data.detail,
-        avatar: avatarRes.data.url,
+        avatar: avatarUrl,
         qr_code: JSON.stringify({
           bank_name: data.bank_name,
           bank_account_number: data.bank_account_number,
@@ -88,15 +134,21 @@ function CreateCharity() {
         }),
       }
 
-      const createCharityRes = await createCharity(createCharityData)
-      if (createCharityRes.status === 201) {
-        toast.success('Tạo tổ chức thành công.')
-        form.reset()
+      const updateCharityRes = await updateCharity(
+        charity.id,
+        updateCharityData
+      )
+
+      if (updateCharityRes.status === 200) {
+        toast.success('Sửa tổ chức thành công.')
+        queryClient.removeQueries({
+          queryKey: [charityKey, 'detail', charityId],
+        })
         return
       }
-      toast.error('Tạo tổ chức thất bại. Vui lòng thử lại sau.')
+      toast.error('Sửa tổ chức thất bại. Vui lòng thử lại sau.')
     } catch (error) {
-      toast.error('Tạo tổ chức thất bại. Vui lòng thử lại sau.')
+      toast.error('Sửa tổ chức thất bại. Vui lòng thử lại sau.')
     } finally {
       setIsLoading(false)
     }
@@ -104,7 +156,7 @@ function CreateCharity() {
 
   return (
     <div className="flex items-center flex-col">
-      <h2 className="text-3xl font-bold mb-5">Tạo tổ chức từ thiện mới</h2>
+      <h2 className="text-3xl font-bold mb-5">Sửa tổ chức từ thiện </h2>
       <Form {...form}>
         <form
           onSubmit={form.handleSubmit(onSubmit)}
@@ -151,7 +203,7 @@ function CreateCharity() {
               <FormItem>
                 <FormLabel>Ảnh đại diện</FormLabel>
                 <FormControl>
-                  <ImageUpload onChange={field.onChange} />
+                  <ImageUpload value={field.value} onChange={field.onChange} />
                 </FormControl>
                 <FormMessage />
               </FormItem>
@@ -164,25 +216,24 @@ function CreateCharity() {
             render={({ field }) => (
               <FormItem>
                 <FormLabel>Ngân hàng thụ hưởng</FormLabel>
-                <Select
-                  onValueChange={field.onChange}
-                  defaultValue={field.value}
-                >
-                  <FormControl>
-                    <SelectTrigger className="w-full">
-                      <SelectValue placeholder="Chọn ngân hàng thụ hưởng" />
-                    </SelectTrigger>
-                  </FormControl>
-                  <SelectContent>
-                    {banks.map((bank: any) => {
-                      return (
-                        <SelectItem key={bank.id} value={bank.bin}>
-                          {bank.shortName}
-                        </SelectItem>
-                      )
-                    })}
-                  </SelectContent>
-                </Select>
+                {banks && (
+                  <Select onValueChange={field.onChange} value={field.value}>
+                    <FormControl>
+                      <SelectTrigger className="w-full">
+                        <SelectValue placeholder="Chọn ngân hàng thụ hưởng" />
+                      </SelectTrigger>
+                    </FormControl>
+                    <SelectContent>
+                      {banks.map((bankIt: any) => {
+                        return (
+                          <SelectItem key={bankIt.bin} value={bankIt.bin}>
+                            {bankIt.shortName}
+                          </SelectItem>
+                        )
+                      })}
+                    </SelectContent>
+                  </Select>
+                )}
                 <FormMessage />
               </FormItem>
             )}
@@ -222,7 +273,7 @@ function CreateCharity() {
             {isLoading ? (
               <LoaderCircleIcon className="animate-spin" />
             ) : (
-              'Tạo tổ chức'
+              'sửa tổ chức'
             )}
           </Button>
         </form>
@@ -231,4 +282,4 @@ function CreateCharity() {
   )
 }
 
-export default CreateCharity
+export default UpdateCharity

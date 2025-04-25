@@ -3,7 +3,7 @@ import { useDropzone } from 'react-dropzone'
 
 interface ImageUploadProps {
   onChange?: (file: File) => void
-  value?: string
+  value?: File
 }
 
 const ImageUpload: FC<ImageUploadProps> = ({ onChange, value }) => {
@@ -22,7 +22,8 @@ const ImageUpload: FC<ImageUploadProps> = ({ onChange, value }) => {
 
   useEffect(() => {
     if (value) {
-      setImage(value)
+      const imageUrl = URL.createObjectURL(value)
+      setImage(imageUrl)
     }
   }, [value])
 

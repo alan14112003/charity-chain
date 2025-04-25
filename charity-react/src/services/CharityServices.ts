@@ -1,6 +1,6 @@
 import http from '@/config/http'
 
-export interface CreateCharityDto {
+export interface FormCharityDto {
   name: string
   detail: string
   avatar: string
@@ -17,6 +17,10 @@ export const getCharityDetail = (charityId: number) => {
   return http.get(`charities/${charityId}`)
 }
 
-export const createCharity = (data: CreateCharityDto) => {
+export const createCharity = (data: FormCharityDto) => {
   return http.post('charities', data)
+}
+
+export const updateCharity = (charityId: number, data: FormCharityDto) => {
+  return http.patch(`charities/${charityId}`, data)
 }

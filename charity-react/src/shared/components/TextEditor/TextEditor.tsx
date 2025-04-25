@@ -8,7 +8,7 @@ import TableCell from '@tiptap/extension-table-cell'
 import TableHeader from '@tiptap/extension-table-header'
 import Placeholder from '@tiptap/extension-placeholder'
 
-import { FC } from 'react'
+import { FC, useEffect, useState } from 'react'
 // define your extension array
 
 interface TextEditorProps {
@@ -42,6 +42,8 @@ const TextEditor: FC<TextEditorProps> = ({
   value,
   placeholder,
 }) => {
+  const [checkInit, setCheckInit] = useState(false)
+
   const editor = useEditor({
     extensions: [
       ...extensions,
@@ -61,6 +63,13 @@ const TextEditor: FC<TextEditorProps> = ({
   if (!editor) {
     return null
   }
+
+  useEffect(() => {
+    if (value && !checkInit) {
+      editor.commands.setContent(value)
+      setCheckInit(true)
+    }
+  }, [editor, value, checkInit])
 
   return (
     <>

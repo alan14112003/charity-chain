@@ -9,6 +9,7 @@ import CharityDetail from '@/components/CharityDetail'
 import ManagementLayout from '@/layouts/Management'
 import CharityManagement from '@/components/Management/components/Charity'
 import CreateCharity from '@/components/Management/components/CreateCharity'
+import UpdateCharity from '@/components/Management/components/UpdateCharity'
 
 const router = createBrowserRouter([
   {
@@ -51,6 +52,10 @@ const router = createBrowserRouter([
           {
             path: 'create',
             Component: CreateCharity,
+          },
+          {
+            path: ':charityId',
+            Component: UpdateCharity,
           },
         ],
       },
