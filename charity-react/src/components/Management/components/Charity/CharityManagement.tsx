@@ -8,11 +8,29 @@ import {
   TableHeader,
   TableRow,
 } from '@/components/ui/table'
-import { charityKey, getAllCharities } from '@/services/CharityServices'
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from '@/components/ui/alert-dialog'
+
+import {
+  charityKey,
+  deleteCharity,
+  getAllCharities,
+} from '@/services/CharityServices'
 import { Charity } from '@/types/charity.type'
 import { Avatar, AvatarImage } from '@radix-ui/react-avatar'
 import { useQuery } from '@tanstack/react-query'
 import { useNavigate } from 'react-router'
+import { toast } from 'react-toastify'
+import queryClient from '@/config/reactQuery'
 
 const CharityManagement = () => {
   const naviage = useNavigate()
@@ -26,6 +44,20 @@ const CharityManagement = () => {
   })
 
   const listCharities: Charity[] = listCharitiesRes?.data || []
+
+  const handleDeteCharity = async (charityId: number) => {
+    const res = await deleteCharity(charityId)
+    if (res.status !== 200) {
+      toast.error('Lỗi khi xóa tổ chức từ thiện')
+      return
+    }
+
+    queryClient.refetchQueries({
+      queryKey: [charityKey],
+    })
+
+    toast.success('Xóa tổ chức từ thiện thành công')
+  }
 
   return (
     <>
@@ -73,9 +105,37 @@ const CharityManagement = () => {
                 >
                   Sửa
                 </Button>
-                <Button className="cursor-pointer" variant={'destructive'}>
-                  Xóa
-                </Button>
+                <AlertDialog>
+                  <AlertDialogTrigger asChild>
+                    <Button className="cursor-pointer" variant={'destructive'}>
+                      Xóa
+                    </Button>
+                  </AlertDialogTrigger>
+                  <AlertDialogContent>
+                    <AlertDialogHeader>
+                      <AlertDialogTitle>
+                        Bạn có chắc chắn muốn xóa ?
+                      </AlertDialogTitle>
+                      <AlertDialogDescription>
+                        Hành động này không thể khôi phục, hãy chắc chắn rằng
+                        bạn muốn xóa trước khi ấn nút tiếp tục
+                      </AlertDialogDescription>
+                    </AlertDialogHeader>
+                    <AlertDialogFooter>
+                      <AlertDialogCancel className="cursor-pointer">
+                        Hủy
+                      </AlertDialogCancel>
+                      <AlertDialogAction
+                        className="cursor-pointer"
+                        onClick={() => {
+                          handleDeteCharity(charity.id)
+                        }}
+                      >
+                        Tiếp tục
+                      </AlertDialogAction>
+                    </AlertDialogFooter>
+                  </AlertDialogContent>
+                </AlertDialog>
               </TableCell>
             </TableRow>
           ))}

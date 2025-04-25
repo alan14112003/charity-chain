@@ -24,3 +24,7 @@ export const createCharity = (data: FormCharityDto) => {
 export const updateCharity = (charityId: number, data: FormCharityDto) => {
   return http.patch(`charities/${charityId}`, data)
 }
+
+export const deleteCharity = (charityId: number) => {
+  return http.delete(`charities/${charityId}`)
+}
