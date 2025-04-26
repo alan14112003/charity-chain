@@ -2,14 +2,28 @@ import { Avatar, AvatarImage } from '@/components/ui/avatar'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent } from '@/components/ui/card'
 import { Progress } from '@/components/ui/progress'
+import { BankInfo } from '@/types/charity.type'
 import { Program } from '@/types/programs.type'
-import { FC } from 'react'
+import { FC, useEffect, useState } from 'react'
+import ProgramQrCode from '../ProgramQrCode'
 
 interface ProgramInfoProps {
   programDetail: Program
 }
 
 const ProgramInfo: FC<ProgramInfoProps> = ({ programDetail }) => {
+  const [bankInfo, setBankInfo] = useState<BankInfo>({
+    bank_account_name: '',
+    bank_account_number: '',
+    bank_name: '',
+  })
+
+  useEffect(() => {
+    if (programDetail) {
+      setBankInfo(JSON.parse(programDetail.charity.qr_code))
+    }
+  }, [programDetail])
+
   return (
     <>
       <h1 className="uppercase font-bold text-2xl pr-2">
@@ -71,7 +85,16 @@ const ProgramInfo: FC<ProgramInfoProps> = ({ programDetail }) => {
               </div>
             </CardContent>
           </Card>
-          <Button className="mt-7 w-full cursor-pointer">Quyên góp</Button>
+          {programDetail && bankInfo.bank_account_name && (
+            <ProgramQrCode
+              acountName={bankInfo.bank_account_name}
+              bankId={bankInfo.bank_name}
+              acountNo={bankInfo.bank_account_number}
+              programCode={programDetail.code}
+            >
+              <Button className="mt-7 w-full cursor-pointer">Quyên góp</Button>
+            </ProgramQrCode>
+          )}
         </div>
       </div>
     </>
