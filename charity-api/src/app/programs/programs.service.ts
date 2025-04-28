@@ -57,14 +57,27 @@ export class ProgramsService {
     });
   }
 
-  update(id: number, updateProgramDto: UpdateProgramDto) {
-    const program = this.programRepository.findOne({
+  async update(id: number, updateProgramDto: UpdateProgramDto) {
+    const program = await this.programRepository.findOne({
       where: { id },
+      relations: ['charity'],
     });
-    if (!program) {
-      return null;
+    if (!program) return null;
+
+    const updateData: any = { ...updateProgramDto };
+
+    if (
+      updateProgramDto.charityId &&
+      program.charity.id !== updateProgramDto.charityId
+    ) {
+      const charity = await this.charityRepository.findOneBy({
+        id: updateProgramDto.charityId,
+      });
+      updateData.charity = charity;
     }
-    return this.programRepository.update(id, updateProgramDto);
+
+    delete updateData.charityId;
+    return this.programRepository.update(id, updateData);
   }
 
   remove(id: number) {
