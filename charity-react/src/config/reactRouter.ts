@@ -10,6 +10,9 @@ import ManagementLayout from '@/layouts/Management'
 import CharityManagement from '@/components/Management/components/Charity'
 import CreateCharity from '@/components/Management/components/CreateCharity'
 import UpdateCharity from '@/components/Management/components/UpdateCharity'
+import ProgramManagement from '@/components/Management/components/Program'
+import CreateProgram from '@/components/Management/components/CreateProgram'
+import UpdateProgram from '@/components/Management/components/UpdateProgram'
 
 const router = createBrowserRouter([
   {
@@ -56,6 +59,23 @@ const router = createBrowserRouter([
           {
             path: ':charityId',
             Component: UpdateCharity,
+          },
+        ],
+      },
+      {
+        path: 'programs',
+        children: [
+          {
+            index: true,
+            Component: ProgramManagement,
+          },
+          {
+            path: 'create',
+            Component: CreateProgram,
+          },
+          {
+            path: ':programId',
+            Component: UpdateProgram,
           },
         ],
       },
