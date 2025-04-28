@@ -2,26 +2,14 @@ import { IsNumber, IsString } from 'class-validator';
 
 export class AddTransactionDto {
   @IsString()
-  accountNumber: string;
-  @IsString()
-  bankName: string;
-  @IsString()
-  accountHolder: string;
+  name: string;
   @IsNumber()
   amount: number;
   @IsString()
   programCode: string;
 
-  constructor(
-    accountNumber: string,
-    bankName: string,
-    accountHolder: string,
-    amount: number,
-    programCode: string,
-  ) {
-    this.accountNumber = accountNumber;
-    this.bankName = bankName;
-    this.accountHolder = accountHolder;
+  constructor(name: string, amount: number, programCode: string) {
+    this.name = name;
     this.amount = amount;
     this.programCode = programCode;
   }

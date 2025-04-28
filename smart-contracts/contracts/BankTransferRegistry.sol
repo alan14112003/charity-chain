@@ -10,9 +10,6 @@ contract BankTransferRegistry {
 
     TransferInfo[] private transfers;
 
-    // Định nghĩa event để ghi nhận thông tin khi có giao dịch mới
-    event TransferAdded(string name, uint256 amount, string programCode);
-
     // Thêm thông tin chuyển khoản
     function addTransfer(
         string memory name,

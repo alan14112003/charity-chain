@@ -30,9 +30,7 @@ export class Web3Service {
 
     const gasEstimate = await this.contract.methods
       .addTransfer(
-        addTransactionDto.accountNumber,
-        addTransactionDto.bankName,
-        addTransactionDto.accountHolder,
+        addTransactionDto.name,
         addTransactionDto.amount,
         addTransactionDto.programCode,
       )
@@ -40,9 +38,7 @@ export class Web3Service {
 
     const data = await this.contract.methods
       .addTransfer(
-        addTransactionDto.accountNumber,
-        addTransactionDto.bankName,
-        addTransactionDto.accountHolder,
+        addTransactionDto.name,
         addTransactionDto.amount,
         addTransactionDto.programCode,
       )
@@ -51,29 +47,19 @@ export class Web3Service {
 
   // Gọi phương thức filterTransfers
   async filterTransfers(
-    accountNumber: string | undefined,
-    bankName: string | undefined,
-    accountHolder: string | undefined,
+    name: string | undefined,
     amount: number | undefined,
     programCode: string | undefined,
   ) {
     try {
       // Kiểm tra và thay thế giá trị undefined hoặc null bằng chuỗi rỗng hoặc 0
-      accountNumber = accountNumber ?? '';
-      bankName = bankName ?? '';
-      accountHolder = accountHolder ?? '';
+      name = name ?? '';
       amount = amount ?? 0;
       programCode = programCode ?? '';
 
       // Gọi phương thức filterTransfers từ hợp đồng thông minh
       const result = await this.contract.methods
-        .filterTransfers(
-          accountNumber,
-          bankName,
-          accountHolder,
-          amount,
-          programCode,
-        )
+        .filterTransfers(name, amount, programCode)
         .call();
 
       return result; // Trả về kết quả lọc
