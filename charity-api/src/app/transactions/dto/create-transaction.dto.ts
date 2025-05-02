@@ -2,11 +2,7 @@ import { IsNumber, IsString } from 'class-validator';
 
 export class CreateTransactionDto {
   @IsString()
-  accountNumber: string;
-  @IsString()
-  bankName: string;
-  @IsString()
-  accountHolder: string;
+  name: string;
   @IsNumber()
   amount: number;
   @IsString()
