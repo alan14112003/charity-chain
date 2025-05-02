@@ -1,9 +1,9 @@
-import { FC, ReactNode } from 'react'
+import { FC, useEffect, useState } from 'react'
 import {
   Dialog,
   DialogContent,
-  DialogDescription,
   DialogHeader,
+  DialogTitle,
   DialogTrigger,
 } from '@/components/ui/dialog'
 
@@ -11,17 +11,19 @@ interface ProgramQrCodeProps {
   bankId: string
   acountNo: string
   acountName: string
-  programCode: string
-  children: ReactNode
+  code?: string
+  setCode: (data: string) => void
 }
 
 const ProgramQrCode: FC<ProgramQrCodeProps> = ({
   bankId,
   acountNo,
   acountName,
-  programCode,
-  children,
+  code,
+  setCode,
 }) => {
+  const [open, setOpen] = useState(false)
+
   const quickLink = ({
     BANK_ID,
     ACCOUNT_NO,
@@ -36,24 +38,43 @@ const ProgramQrCode: FC<ProgramQrCodeProps> = ({
     return `https://img.vietqr.io/image/${BANK_ID}-${ACCOUNT_NO}-compact2.png?addInfo=${DESCRIPTION}&accountName=${ACCOUNT_NAME}`
   }
 
+  useEffect(() => {
+    if (code) {
+      setOpen(true)
+    }
+  }, [code])
+
   return (
-    <Dialog>
-      <DialogTrigger asChild>{children}</DialogTrigger>
+    <Dialog
+      open={open}
+      onOpenChange={(data) => {
+        setOpen(data)
+        if (!data) {
+          setCode('')
+        }
+      }}
+    >
+      <DialogTrigger asChild>
+        <div></div>
+      </DialogTrigger>
       <DialogContent>
         <DialogHeader className="px-4">
-          <DialogDescription>
-            <div>
+          <DialogTitle className="text-center text-2xl font-bold">
+            Quét mã QR bằng ứng dụng ngân hàng để quyên góp
+          </DialogTitle>
+          <div>
+            {code && (
               <img
                 src={quickLink({
                   BANK_ID: bankId,
                   ACCOUNT_NO: acountNo,
                   ACCOUNT_NAME: acountName,
-                  DESCRIPTION: programCode,
+                  DESCRIPTION: code,
                 })}
                 alt={`image for ${acountName}`}
               />
-            </div>
-          </DialogDescription>
+            )}
+          </div>
         </DialogHeader>
       </DialogContent>
     </Dialog>

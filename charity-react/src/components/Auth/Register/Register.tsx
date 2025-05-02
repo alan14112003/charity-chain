@@ -1,12 +1,9 @@
-import { Helmet } from 'react-helmet'
 import { Link } from 'react-router'
 
 const Register = () => {
   return (
     <>
-      <Helmet>
-        <title>Đăng ký tài khoản</title>
-      </Helmet>
+      <title>Đăng ký tài khoản</title>
       <div className="min-h-screen flex items-center justify-center bg-gray-100">
         <form className="bg-white p-6 rounded-2xl shadow-lg w-full max-w-sm space-y-4">
           <h2 className="text-2xl font-bold text-center">Đăng ký tài khoản</h2>

@@ -6,7 +6,6 @@ import {
 import { Program } from '@/types/programs.type'
 import { useQuery } from '@tanstack/react-query'
 import { useParams } from 'react-router'
-import { Helmet } from 'react-helmet'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '../ui/tabs'
 import { Transaction } from '@/types/transactions.type'
 import ProgramInfo from './components/ProgramInfo'
@@ -31,10 +30,10 @@ const ProgramDetail = () => {
   return (
     <>
       {programDetail && (
-        <Helmet>
+        <>
           <title>{programDetail.name}</title>
           <meta name="description" content={programDetail.descriptions} />
-        </Helmet>
+        </>
       )}
       <div className="mt-10">
         {programDetail && <ProgramInfo programDetail={programDetail} />}

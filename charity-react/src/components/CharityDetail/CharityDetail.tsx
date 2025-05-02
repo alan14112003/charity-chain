@@ -1,7 +1,6 @@
 import { charityKey, getCharityDetail } from '@/services/CharityServices'
 import { Charity } from '@/types/charity.type'
 import { useQuery } from '@tanstack/react-query'
-import { Helmet } from 'react-helmet'
 import { useParams } from 'react-router'
 
 const CharityDetail = () => {
@@ -16,10 +15,10 @@ const CharityDetail = () => {
   return (
     <>
       {charityDetail && (
-        <Helmet>
+        <>
           <title>{charityDetail.name}</title>
           <meta name="description" content={charityDetail.detail} />
-        </Helmet>
+        </>
       )}
       <div className="my-10">
         {charityDetail && (
