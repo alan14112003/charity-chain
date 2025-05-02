@@ -6,5 +6,5 @@ export class CreateTransactionDto {
   @IsNumber()
   amount: number;
   @IsString()
-  programCode: string;
+  code: string;
 }

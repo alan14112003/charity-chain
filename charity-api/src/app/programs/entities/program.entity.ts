@@ -1,5 +1,12 @@
 import { Charity } from 'src/app/charities/entities/charity.entity';
-import { Column, Entity, ManyToOne, PrimaryGeneratedColumn } from 'typeorm';
+import { TempTransaction } from 'src/app/temp_transactions/entities/temp_transaction.entity';
+import {
+  Column,
+  Entity,
+  ManyToOne,
+  OneToMany,
+  PrimaryGeneratedColumn,
+} from 'typeorm';
 
 @Entity()
 export class Program {
@@ -40,4 +47,10 @@ export class Program {
     onDelete: 'CASCADE',
   })
   charity: Charity;
+
+  @OneToMany(
+    () => TempTransaction,
+    (tempTransaction) => tempTransaction.program,
+  )
+  tempTransactions: TempTransaction[];
 }

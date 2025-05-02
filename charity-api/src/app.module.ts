@@ -11,6 +11,7 @@ import { TransactionsModule } from './app/transactions/transactions.module';
 import { CharitiesModule } from './app/charities/charities.module';
 import { ProgramsModule } from './app/programs/programs.module';
 import { UploadsModule } from './app/uploads/uploads.module';
+import { TempTransactionsModule } from './app/temp_transactions/temp_transactions.module';
 
 @Module({
   imports: [
@@ -32,6 +33,7 @@ import { UploadsModule } from './app/uploads/uploads.module';
     CharitiesModule,
     ProgramsModule,
     UploadsModule,
+    TempTransactionsModule,
   ],
 })
 export class AppModule {}

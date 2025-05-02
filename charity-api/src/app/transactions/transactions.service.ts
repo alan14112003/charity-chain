@@ -5,32 +5,34 @@ import { TransactionDto } from './dto/transaction.dto';
 import { Web3Service } from '../web3/web3.service';
 import { AddTransactionDto } from '../web3/dto/add-transaction.dto';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Program } from '../programs/entities/program.entity';
 import { QueryRunner, Repository } from 'typeorm';
+import { TempTransaction } from '../temp_transactions/entities/temp_transaction.entity';
 
 @Injectable()
 export class TransactionsService {
   constructor(
     @Inject() private readonly web3Service: Web3Service,
-    @InjectRepository(Program)
-    private readonly programRepository: Repository<Program>,
+    @InjectRepository(TempTransaction)
+    private readonly tempTransactionRepository: Repository<TempTransaction>,
   ) {}
   async create(createTransactionDto: CreateTransactionDto) {
     const queryRunner: QueryRunner =
-      this.programRepository.manager.connection.createQueryRunner();
+      this.tempTransactionRepository.manager.connection.createQueryRunner();
 
     // Bắt đầu transaction
     await queryRunner.startTransaction();
 
     try {
-      const program = await this.programRepository.findOneBy({
-        code: createTransactionDto.programCode,
+      const tempTransaction = await this.tempTransactionRepository.findOne({
+        where: { code: createTransactionDto.code },
+        relations: ['program'],
       });
 
-      if (!program) {
+      if (!tempTransaction) {
         throw new NotFoundException('Program not found');
       }
 
+      const program = tempTransaction.program;
       program.total = program.total + createTransactionDto.amount;
       program.donateCount++;
       await queryRunner.manager.save(program);
@@ -39,9 +41,12 @@ export class TransactionsService {
         new AddTransactionDto(
           createTransactionDto.name,
           createTransactionDto.amount,
-          createTransactionDto.programCode,
+          createTransactionDto.code,
         ),
       );
+
+      // Xóa tempTransaction sau khi đã xử lý
+      await queryRunner.manager.delete(TempTransaction, tempTransaction.id);
 
       await queryRunner.commitTransaction();
       return { message: 'Thành công' };

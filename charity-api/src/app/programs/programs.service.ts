@@ -5,19 +5,10 @@ import { In, Repository } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Program } from './entities/program.entity';
 import { Charity } from '../charities/entities/charity.entity';
+import { StringUtils } from 'src/utils/string.utils';
 
 @Injectable()
 export class ProgramsService {
-  generateCode(length = 8) {
-    const chars =
-      'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
-    let result = '';
-    for (let i = 0; i < length; i++) {
-      result += chars.charAt(Math.floor(Math.random() * chars.length));
-    }
-    return result;
-  }
-
   constructor(
     @InjectRepository(Program)
     private readonly programRepository: Repository<Program>,
@@ -37,7 +28,7 @@ export class ProgramsService {
 
     program.charity = charity;
     do {
-      program.code = this.generateCode(8);
+      program.code = StringUtils.generateCode(8);
     } while (
       await this.programRepository.findOne({ where: { code: program.code } })
     );
