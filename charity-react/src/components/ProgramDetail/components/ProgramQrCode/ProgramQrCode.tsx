@@ -69,7 +69,7 @@ const ProgramQrCode: FC<ProgramQrCodeProps> = ({
                   BANK_ID: bankId,
                   ACCOUNT_NO: acountNo,
                   ACCOUNT_NAME: acountName,
-                  DESCRIPTION: code,
+                  DESCRIPTION: `ala${code}ala`,
                 })}
                 alt={`image for ${acountName}`}
               />

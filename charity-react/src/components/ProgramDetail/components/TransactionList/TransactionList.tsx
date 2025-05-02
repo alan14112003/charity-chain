@@ -2,7 +2,7 @@ import { Card, CardContent } from '@/components/ui/card'
 import { ScrollArea } from '@/components/ui/scroll-area'
 import { Transaction } from '@/types/transactions.type'
 import { FC } from 'react'
-import { formatVND, maskAccountNumber } from '../../utils/helper'
+import { formatVND } from '../../utils/helper'
 
 interface TransactionListProps {
   transactions: Transaction[]
@@ -20,14 +20,9 @@ const TransactionList: FC<TransactionListProps> = ({ transactions }) => {
         </CardContent>
       </Card>
       {transactions.map((transaction, index) => (
-        <Card
-          className="mt-3 py-3"
-          key={transaction.accountNumber + `${index}`}
-        >
+        <Card className="mt-3 py-3" key={transaction.name + `${index}`}>
           <CardContent className="flex items-center justify-between">
-            <div>{transaction.bankName}</div>
-            <div>{transaction.accountHolder}</div>
-            <div>{maskAccountNumber(transaction.accountNumber)}</div>
+            <div>{transaction.name}</div>
             <div>{formatVND(transaction.amount)}</div>
           </CardContent>
         </Card>
