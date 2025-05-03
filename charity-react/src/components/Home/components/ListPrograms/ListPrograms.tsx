@@ -11,7 +11,7 @@ const ListPrograms = () => {
 
   const listPrograms: Program[] = listProgramsRes?.data || []
   return (
-    <div className="mt-4">
+    <div className="mt-4 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
       {listPrograms.map((program) => (
         <ProgramItem key={program.id} program={program} />
       ))}

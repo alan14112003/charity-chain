@@ -18,7 +18,7 @@ interface ProgramItemProps {
 
 const ProgramItem: FC<ProgramItemProps> = ({ program }) => {
   return (
-    <Card className="w-full sm:w-1/2 lg:w-1/3 shadow-lg py-2 gap-2">
+    <Card className="shadow-lg py-2 gap-2">
       <Link to={'/programs/' + program.id} className="group">
         <CardContent>
           <img
@@ -29,7 +29,8 @@ const ProgramItem: FC<ProgramItemProps> = ({ program }) => {
         </CardContent>
         <CardHeader className="flex flex-row items-center gap-4">
           <div>
-            <CardTitle className="text-lg group-hover:text-blue-400">
+            {/* cho title có giới hạn 3 dòng */}
+            <CardTitle className="text-lg group-hover:text-blue-400 text-ellipsis line-clamp-3 overflow-hidden">
               {program.name}
             </CardTitle>
           </div>

@@ -9,7 +9,7 @@ interface CharityItemProps {
 
 const CharityItem: FC<CharityItemProps> = ({ charity }) => {
   return (
-    <Card className="w-full sm:w-1/2 lg:w-1/3 shadow-lg py-2 gap-2">
+    <Card className="shadow-lg py-2 gap-2">
       <Link to={'/charities/' + charity.id} className="group">
         <CardContent>
           <img

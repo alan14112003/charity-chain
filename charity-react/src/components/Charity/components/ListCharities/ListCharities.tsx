@@ -11,7 +11,7 @@ const ListCharities = () => {
 
   const listCharities: Charity[] = listCharitiesRes?.data || []
   return (
-    <div className="mt-4 flex gap-4">
+    <div className="mt-4 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
       {listCharities.map((charity) => (
         <CharityItem key={charity.id} charity={charity} />
       ))}
