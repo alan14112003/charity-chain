@@ -20,7 +20,6 @@ const initialState: AuthState = {
     email: '',
     address: '',
     phone: '',
-    role: null,
   },
 }
 

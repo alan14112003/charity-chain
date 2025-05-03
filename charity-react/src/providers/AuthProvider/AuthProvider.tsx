@@ -20,7 +20,7 @@ export const AuthGuard = ({ children }: AuthGuardProp) => {
   useLayoutEffect(() => {
     if (!auth.isAuthenticated && auth.isInitialized) {
       navigate('/login')
-      toast.error('You need to login first')
+      toast.error('Bạn cần đang nhập để truy cập trang này')
     }
   }, [auth])
 

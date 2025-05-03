@@ -188,7 +188,13 @@ const CreateProgram = () => {
               <FormItem>
                 <FormLabel>Mục tiêu</FormLabel>
                 <FormControl>
-                  <Input placeholder="100.000.000" {...field} />
+                  <Input
+                    placeholder="100.000.000"
+                    {...field}
+                    onChange={(e) => {
+                      field.onChange(+e.target.value)
+                    }}
+                  />
                 </FormControl>
                 <FormMessage />
               </FormItem>

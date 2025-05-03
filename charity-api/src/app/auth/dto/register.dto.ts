@@ -25,7 +25,19 @@ export class RegisterDto {
   @MinLength(6)
   password: string;
 
-  @ApiProperty({ example: 1, description: 'ID của vai trò (Role)' })
-  @IsNotEmpty()
-  roleId: number;
+  @ApiProperty({
+    example: '0312345678',
+    description: 'Số điện thoại',
+    minLength: 10,
+  })
+  @IsString()
+  @MinLength(10)
+  phone: string;
+
+  @ApiProperty({
+    example: '123, Đường ABC, Quận 1, TP.HCM',
+    description: 'Địa chỉ',
+  })
+  @IsString()
+  address: string;
 }

@@ -1,4 +1,13 @@
 import ModeToggle from '@/components/ModeToogle'
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from '@/components/ui/dropdown-menu'
+import { resetAuth, selectAuth } from '@/store/auth/auth.slice'
+import { useAppDispatch, useAppSelector } from '@/store/hooks'
+import { resetAuthLS } from '@/utils/authLS'
 import { useState } from 'react'
 import { Link } from 'react-router'
 
@@ -7,6 +16,14 @@ const Header = () => {
 
   const toggleMobileMenu = () => {
     setIsMobileMenuOpen(!isMobileMenuOpen)
+  }
+
+  const auth = useAppSelector(selectAuth)
+  const dispatch = useAppDispatch()
+
+  const handleLogout = () => {
+    dispatch(resetAuth())
+    resetAuthLS()
   }
 
   return (
@@ -48,12 +65,30 @@ const Header = () => {
 
             {/* Auth Buttons */}
             <div className="ml-6 space-x-3">
-              <button className="text-gray-700 dark:text-gray-200 hover:text-blue-600 dark:hover:text-blue-400 font-medium">
-                Đăng nhập
-              </button>
-              <button className="bg-blue-600 hover:bg-blue-700 dark:bg-blue-500 dark:hover:bg-blue-600 text-white px-4 py-1 rounded font-medium">
-                Đăng ký
-              </button>
+              {auth.isInitialized && auth.isAuthenticated ? (
+                <DropdownMenu>
+                  <DropdownMenuTrigger className="border outline-none rounded-md px-4 py-2 cursor-pointer">
+                    {auth.user.fullName}
+                  </DropdownMenuTrigger>
+                  <DropdownMenuContent>
+                    <DropdownMenuItem>
+                      <Link to={'/management/charities'}>
+                        Đến trang quản lý
+                      </Link>
+                    </DropdownMenuItem>
+                    <DropdownMenuItem onClick={handleLogout}>
+                      Đăng xuất
+                    </DropdownMenuItem>
+                  </DropdownMenuContent>
+                </DropdownMenu>
+              ) : (
+                <Link
+                  to={'/login'}
+                  className="bg-blue-600 hover:bg-blue-700 dark:bg-blue-500 dark:hover:bg-blue-600 text-white px-4 py-1 rounded font-medium"
+                >
+                  Đăng nhập
+                </Link>
+              )}
             </div>
           </nav>
 

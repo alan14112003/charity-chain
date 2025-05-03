@@ -7,7 +7,6 @@ import { JwtService } from '@nestjs/jwt';
 import { UsersService } from '../users/users.service';
 import * as bcrypt from 'bcrypt';
 import { RegisterDto } from './dto/register.dto';
-import { RolesService } from '../roles/roles.service';
 import { plainToInstance } from 'class-transformer';
 import { UserResponseDto } from './dto/user-response.dto';
 
@@ -16,7 +15,6 @@ export class AuthService {
   constructor(
     private usersService: UsersService,
     private jwtService: JwtService,
-    private rolesService: RolesService,
   ) {}
 
   async validateUser(email: string, password: string): Promise<any> {
@@ -49,16 +47,9 @@ export class AuthService {
   }
 
   async register(registerDto: RegisterDto) {
-    const role = await this.rolesService.findOneNotRelation(registerDto.roleId);
-    if (!role) {
-      throw new BadRequestException('Invalid role');
-    }
-
     const user = await this.usersService.create({
-      fullName: registerDto.fullName,
-      email: registerDto.email,
+      ...registerDto,
       password: bcrypt.hashSync(registerDto.password, 10),
-      role: role,
     });
 
     return user;

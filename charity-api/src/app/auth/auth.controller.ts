@@ -21,6 +21,7 @@ import {
 import { JwtAuthGuard } from './guards/jwt-auth.guard';
 import { plainToInstance } from 'class-transformer';
 import { UserResponseDto } from './dto/user-response.dto';
+import { log } from 'console';
 
 @ApiTags('Auth')
 @Controller('auth')

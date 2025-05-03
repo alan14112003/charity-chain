@@ -13,7 +13,6 @@ import { UsersService } from './users.service';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
-import { PermissionGuard } from '../auth/guards/permission.guard';
 import { Permission } from '../auth/decorators/permission.decorator';
 import {
   ApiBadRequestResponse,
@@ -30,7 +29,7 @@ import { plainToInstance } from 'class-transformer';
 import { GetAllUsersDto } from './dto/get-all-users.dto';
 
 @Controller('users')
-@UseGuards(JwtAuthGuard, PermissionGuard)
+@UseGuards(JwtAuthGuard)
 @ApiTags('users')
 @ApiBearerAuth()
 export class UsersController {

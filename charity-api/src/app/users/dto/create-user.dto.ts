@@ -1,6 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { IsEmail, IsNotEmpty, IsString, MinLength } from 'class-validator';
-import { Role } from 'src/app/roles/entities/role.entity';
 
 export class CreateUserDto {
   @ApiProperty({ example: 'Nguyen Van A', description: 'Họ và tên' })
@@ -23,7 +22,19 @@ export class CreateUserDto {
   @MinLength(6)
   password: string;
 
-  @ApiProperty({ example: 1, description: 'ID của vai trò (Role)' })
-  @IsNotEmpty()
-  role: Role;
+  @ApiProperty({
+    example: '0312345678',
+    description: 'Số điện thoại',
+    minLength: 10,
+  })
+  @IsString()
+  @MinLength(10)
+  phone: string;
+
+  @ApiProperty({
+    example: '123, Đường ABC, Quận 1, TP.HCM',
+    description: 'Địa chỉ',
+  })
+  @IsString()
+  address: string;
 }

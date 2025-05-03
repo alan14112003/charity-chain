@@ -22,6 +22,7 @@ export class UsersService {
       if (error.code === 'ER_DUP_ENTRY') {
         throw new Error('Email already in use');
       }
+      throw error;
     }
   }
 
@@ -55,11 +56,6 @@ export class UsersService {
       where: {
         id,
       },
-      relations: {
-        role: {
-          permissions: true,
-        },
-      },
     });
   }
 
@@ -80,11 +76,6 @@ export class UsersService {
   async findByEmail(email: string): Promise<User | null> {
     return this.usersRepository.findOne({
       where: { email },
-      relations: {
-        role: {
-          permissions: true,
-        },
-      },
     });
   }
 }

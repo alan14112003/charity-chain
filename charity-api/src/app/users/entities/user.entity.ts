@@ -1,11 +1,4 @@
-import { Role } from 'src/app/roles/entities/role.entity';
-import {
-  Column,
-  Entity,
-  ManyToOne,
-  PrimaryGeneratedColumn,
-  Unique,
-} from 'typeorm';
+import { Column, Entity, PrimaryGeneratedColumn, Unique } from 'typeorm';
 
 @Entity()
 export class User {
@@ -24,7 +17,4 @@ export class User {
 
   @Column()
   address: string;
-
-  @ManyToOne(() => Role, (role) => role.users)
-  role: Role;
 }
