@@ -13,6 +13,7 @@ import UpdateCharity from '@/components/Management/components/UpdateCharity'
 import ProgramManagement from '@/components/Management/components/Program'
 import CreateProgram from '@/components/Management/components/CreateProgram'
 import UpdateProgram from '@/components/Management/components/UpdateProgram'
+import AboutUs from '@/components/AboutUs'
 
 const router = createBrowserRouter([
   {
@@ -30,6 +31,10 @@ const router = createBrowserRouter([
       {
         path: '/charities/:charityId',
         Component: CharityDetail,
+      },
+      {
+        path: 'about-us',
+        Component: AboutUs, // Placeholder for About Us page
       },
       {
         path: 'login',

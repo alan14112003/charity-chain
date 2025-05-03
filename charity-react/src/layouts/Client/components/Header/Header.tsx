@@ -55,7 +55,7 @@ const Header = () => {
               Tổ chức từ thiện
             </Link>
             <Link
-              to="#"
+              to="/about-us"
               className="text-gray-700 dark:text-gray-200 hover:text-blue-600 dark:hover:text-blue-400 font-medium"
             >
               Về chúng tôi
