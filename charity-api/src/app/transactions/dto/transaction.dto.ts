@@ -2,13 +2,7 @@ import { Expose, Transform } from 'class-transformer';
 
 export class TransactionDto {
   @Expose()
-  accountNumber: string;
-
-  @Expose()
-  bankName: string;
-
-  @Expose()
-  accountHolder: string;
+  name: string;
 
   @Expose()
   @Transform(({ value }) => Number(value), { toClassOnly: true })

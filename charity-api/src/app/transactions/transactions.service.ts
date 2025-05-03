@@ -39,9 +39,9 @@ export class TransactionsService {
 
       await this.web3Service.addTransfer(
         new AddTransactionDto(
-          createTransactionDto.name,
+          tempTransaction.name,
           createTransactionDto.amount,
-          createTransactionDto.code,
+          program.code,
         ),
       );
 
