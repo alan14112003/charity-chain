@@ -13,9 +13,7 @@ const TransactionList: FC<TransactionListProps> = ({ transactions }) => {
     <ScrollArea className="h-[500px] w-full rounded-md border p-4">
       <Card className="py-3 sticky top-0 z-10">
         <CardContent className="flex items-center justify-between">
-          <div>Ngân hàng</div>
-          <div>Tên tài khoản</div>
-          <div>Số tài khoản</div>
+          <div>Nhà hảo tâm</div>
           <div>Số tiền</div>
         </CardContent>
       </Card>

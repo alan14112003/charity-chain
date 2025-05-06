@@ -1,3 +1,4 @@
+import { formatVND } from '@/components/ProgramDetail/utils/helper'
 import { Avatar, AvatarImage } from '@/components/ui/avatar'
 import { Button } from '@/components/ui/button'
 import {
@@ -54,12 +55,12 @@ const ProgramItem: FC<ProgramItemProps> = ({ program }) => {
             {/* thống kê số tiền nhận */}
             <div className="text-sm">Tổng số tiền nhận được</div>
             <div className="flex items-center gap-1 ">
-              <span>{program.total}đ</span>
+              <span>{formatVND(program.total)}</span>
               {program.target && (
                 <>
                   <span>/</span>
                   <span className="text-muted-foreground">
-                    {program.target}đ
+                    {formatVND(program.target)}
                   </span>
                 </>
               )}

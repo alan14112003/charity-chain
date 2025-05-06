@@ -5,6 +5,7 @@ import { Progress } from '@/components/ui/progress'
 import { Program } from '@/types/programs.type'
 import { FC } from 'react'
 import TransactionForm from '../TransactionForm'
+import { formatVND } from '../../utils/helper'
 
 interface ProgramInfoProps {
   programDetail: Program
@@ -28,9 +29,9 @@ const ProgramInfo: FC<ProgramInfoProps> = ({ programDetail }) => {
             <CardContent>
               <div>
                 {/* thống kê số tiền nhận */}
-                <div className="text-sm">Tổng số tiền nhận được</div>
+                <div className="">Tổng số tiền nhận được</div>
                 <div className="flex items-center gap-1">
-                  <span>{programDetail.total}đ</span>
+                  <span>{formatVND(programDetail.total)}</span>
                   {programDetail.target && (
                     <>
                       <span>/</span>
@@ -46,7 +47,7 @@ const ProgramInfo: FC<ProgramInfoProps> = ({ programDetail }) => {
                   />
                 )}
               </div>
-              <div className="flex justify-between items-center w-full pb-2">
+              <div className="flex justify-between items-center w-full pb-2 mt-2">
                 <div>
                   <div>Lượt quyên góp</div>
                   <div>{programDetail.donateCount}</div>
