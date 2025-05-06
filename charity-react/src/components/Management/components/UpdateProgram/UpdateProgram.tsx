@@ -243,7 +243,7 @@ const UpdateProgram = () => {
             {isLoading ? (
               <LoaderCircleIcon className="animate-spin" />
             ) : (
-              'Cập nhật tổ chức'
+              'Cập nhật chương trình'
             )}
           </Button>
         </form>

@@ -206,7 +206,7 @@ const CreateProgram = () => {
             {isLoading ? (
               <LoaderCircleIcon className="animate-spin" />
             ) : (
-              'Tạo tổ chức'
+              'Tạo chương trình'
             )}
           </Button>
         </form>
